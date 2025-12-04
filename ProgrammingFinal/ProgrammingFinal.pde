@@ -18,11 +18,14 @@ void draw(){
   //Block of code dedicated to running the enemy methods
   enemy.draw();
   enemy.act();
+  enemy.playerCheck(player);
   
   //Block of code dedicated to runnings the player methods
   player.act();
   player.draw();
+  player.enemyCheck(enemy);
   
+  drawHealthBars(player.health, enemy.health);
   
   if (!keyPressed){
     //blockCheck is used here to stop the players block if they let go of the button
@@ -47,4 +50,26 @@ void drawBackground(){
 
 void keyPressed(){
    player.processInput(); 
+}
+
+// Draws the health bars using map, and the int value of both the player and enemy health. 
+void drawHealthBars(int p, int e){
+    fill(0);
+    println(e);
+    rect(160, 0, 200, 40);
+    rect(440, 0, 200, 40);
+    fill(255);
+    if (p > 0){
+    beginShape();
+      vertex(160 + map(p, 1000, 0, 0, 200), 0);
+      vertex(160 + map(p, 1000, 0, 0, 200), 40);
+      vertex(360, 40);
+      vertex(360, 0);
+      endShape(CLOSE);
+    }
+    
+    if (e > 0){
+      rect(440, 0, 200 - (map(e, 0, 1000, 200, 0)), 40);
+    }
+    
 }

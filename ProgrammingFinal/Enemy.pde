@@ -1,7 +1,7 @@
 class Enemy {
   int health;
-  String state; //States are vulnerable, block, dodge, attack, invulnerable, and down
-  String currentAction; // Actions: idle, jab, hook, uppercut, block, dodge, reel
+  String state; //States are vulnerable, open, block, dodge, attack, invulnerable, and down
+  String currentAction; // Actions: idle, jab, hook, uppercut, block, reel
   PImage sprite;
   int waitTime; // How much the enemy will wait before their next action.
   int reelTime; //If the enemy is hit right now, how long will they be stunned for?
@@ -37,19 +37,19 @@ class Enemy {
   void act() {
     if (waitTime > 0 && currentAction == "idle") {
       waitTime --;
-    } else if (waitTime == 0 && currentAction == "idle") {
+    } else if (waitTime <= 0 && currentAction == "idle") {
       if (randomizer <= 5) {
         state = "invulnerable";
         currentAction = "jab";
-        reelTime = 55;
+        reelTime = 105;
         pDamage = 100;
-        counter = 80;
+        counter = 110;
         //Sprite = jabStart
         c = color(100, 0, 0);
       } else if (randomizer <= 8) {
         state = "invulnerable";
         currentAction = "hook";
-        reelTime = 145;
+        reelTime = 200;
         pDamage = 300;
         counter = 150;
         //Sprite = hookStartStart
@@ -57,13 +57,41 @@ class Enemy {
       } else {
         state = "invulnerable";
         currentAction = "uppercut";
-        reelTime = 314;
+        reelTime = 300;
         pDamage = 800;
         counter = 150;
         //Sprite = upperCutStart
         c = color(0, 0, 100);
       }
-    } else {
+    }  else if (waitTime <= 0 && currentAction == "block") {
+      if (randomizer <= 5) {
+        state = "invulnerable";
+        currentAction = "jab";
+        reelTime = 105;
+        pDamage = 100;
+        counter = 110;
+        //Sprite = jabStart
+        c = color(100, 0, 0);
+      } else if (randomizer <= 8) {
+        state = "invulnerable";
+        currentAction = "hook";
+        reelTime = 200;
+        pDamage = 300;
+        counter = 150;
+        //Sprite = hookStartStart
+        c = color(0, 100, 0);
+      } else {
+        state = "invulnerable";
+        currentAction = "uppercut";
+        reelTime = 300;
+        pDamage = 800;
+        counter = 150;
+        //Sprite = upperCutStart
+        c = color(0, 0, 100);
+      }
+    }
+    
+    else {
       if (counter > 0) {
         counter --;
       } else {
@@ -76,11 +104,11 @@ class Enemy {
       }
 
       if (currentAction == "jab") {
-        if (counter == 60) {
+        if (counter == 80) {
           //sprite = activePunch
           c = color(255, 0, 0);
           state = "attack";
-        } else if (counter == 59) {
+        } else if (counter == 79) {
           state = "vulnerable";
         }
       } else if (currentAction == "hook") {
@@ -92,15 +120,37 @@ class Enemy {
           state = "vulnerable";
         }
       } else if (currentAction == "uppercut"){
-        if (counter == 132) {
+        if (counter == 130) {
           //sprite = activePunch
           print("AA");
           c = color(255, 0, 0);
           state = "attack";
-        } else if (counter == 131) {
+        } else if (counter == 129) {
           state = "vulnerable";
         }
       }
+    }
+  }
+  
+  void playerCheck(Player player){
+    if(player.state == "attack"){
+      if(state == "block"){
+          c = color(200, 200, 200);
+          currentAction = "block";
+          state = "block";
+          counter = 10;
+          waitTime -= 30;
+          health -= 1;
+      } else if (state == "vulnerable"){
+        currentAction = "reel";
+        counter = reelTime;
+        state = "open";
+        c = color(255, 255, 255);
+        health -= 15;
+      } else if (state == "open"){
+        health -= 15;
+      }
+      
     }
   }
 }

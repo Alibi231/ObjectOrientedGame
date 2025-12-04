@@ -1,7 +1,7 @@
 class Player {
   int health;
   String state; //States are neutral, block, dodge, attack, and down.
-  String currentAction; // Actions: idle, punch, block, lDodge, rDodge, reel
+  String currentAction; // Actions: idle, punch, block, lDodge, rDodge, reel, stun
   PImage sprite;
   int counter;
   int knockdowns;
@@ -14,7 +14,7 @@ class Player {
     state = "neutral";
     currentAction = "idle";
     //SET PImage
-    counter  = 0;
+    counter = 0;
     knockdowns = 0;
     roundKnockdowns = 0;
     position = new PVector(320, 640);
@@ -39,55 +39,54 @@ class Player {
         state = "dodge";
         //Image = leftDodge;
         c = color(0, 255, 0);
-      } else if (key == 'd'){
+      } else if (key == 'd') {
         counter = 30;
         currentAction = "rDodge";
         state = "dodge";
         //Image = rightDodge;
         c = color(0, 255, 0);
-      } else if (key == 'w'){
+      } else if (key == 'w') {
         counter = 15;
         currentAction = "punch";
         state = "neutral";
         //Image = punch;
         c = color(100, 0, 0);
-      } else if (key == 's'){
+      } else if (key == 's') {
         c = color(0, 0, 255);
         //Image = block;
         state = "block";
         currentAction = "block";
       }
-    } 
+    }
   }
 
   void act() {
     if (counter > 0) {
       counter --;
-    } else if (counter == 0){
-       //image = default
-       if (currentAction != "block"){
-         currentAction = "idle";
-         state = "default";
-         c = color(100, 100, 100);
-       }
+    } else if (counter == 0) {
+      //image = default
+      if (currentAction != "block") {
+        currentAction = "idle";
+        state = "default";
+        c = color(100, 100, 100);
+      }
     }
-    
-    if (currentAction == "lDodge" || currentAction == "rDodge"){
-       if (counter == 20){
-         //image = default
-         c = color(100, 100, 100);
-         state = "default";
-       }
-    } else if (currentAction == "punch"){
-       if (counter == 5){
-         //PImage = punch
-         c = color(255, 0, 0);
-         state = "attack";
-       } else if (counter == 4){
-          state = "neutral"; 
-       }
+
+    if (currentAction == "lDodge" || currentAction == "rDodge") {
+      if (counter == 20) {
+        //image = default
+        c = color(100, 100, 100);
+        state = "default";
+      }
+    } else if (currentAction == "punch") {
+      if (counter == 5) {
+        //PImage = punch
+        c = color(255, 0, 0);
+        state = "attack";
+      } else if (counter == 4) {
+        state = "neutral";
+      }
     }
-    
   }
 
   void draw() {
@@ -95,10 +94,30 @@ class Player {
     fill(c);
     rect(position.x, position.y, 100, 200);
   }
-  
+
   void blockCheck() {
-   if (currentAction == "block"){
+    if (currentAction == "block") {
       currentAction = "neutral";
-   }
-}
+    }
+  }
+  
+  void enemyCheck(Enemy enemy){
+     if (enemy.state == "attack"){
+       if (state != "dodge"){
+          if (state == "block" && enemy.pDamage != 800){
+            currentAction = "stun";
+            state = "neutral";
+            counter = 80;
+            health -= int (enemy.pDamage / 4);
+            c = color(200, 200, 200);
+          } else {
+            currentAction = "reel";
+            state = "neutral";
+            counter = 90;
+            health -= enemy.pDamage;
+            c = color(255, 255, 255);
+          }
+       }
+     }
+  }
 }

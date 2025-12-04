@@ -5,6 +5,7 @@ class Player {
   PImage sprite;
   int counter;
   int knockdowns;
+  int roundKnockdowns;
   PVector position;
   color c = color(100, 100, 100);
 
@@ -15,6 +16,7 @@ class Player {
     //SET PImage
     counter  = 0;
     knockdowns = 0;
+    roundKnockdowns = 0;
     position = new PVector(320, 640);
   }
 
@@ -38,13 +40,13 @@ class Player {
         //Image = leftDodge;
         c = color(0, 255, 0);
       } else if (key == 'd'){
-        counter = 40;
+        counter = 30;
         currentAction = "rDodge";
         state = "dodge";
         //Image = rightDodge;
         c = color(0, 255, 0);
       } else if (key == 'w'){
-        counter = 40;
+        counter = 15;
         currentAction = "punch";
         state = "neutral";
         //Image = punch;
@@ -77,11 +79,11 @@ class Player {
          state = "default";
        }
     } else if (currentAction == "punch"){
-       if (counter == 10){
+       if (counter == 5){
          //PImage = punch
          c = color(255, 0, 0);
          state = "attack";
-       } else if (counter == 9){
+       } else if (counter == 4){
           state = "neutral"; 
        }
     }
@@ -91,7 +93,7 @@ class Player {
   void draw() {
     //Will eventually use PImage, for now, use a grey rect
     fill(c);
-    rect(position.x, position.y, 100, 400);
+    rect(position.x, position.y, 100, 200);
   }
   
   void blockCheck() {

@@ -1,19 +1,28 @@
 Player player;
+Enemy enemy;
 
 void setup(){
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
   
   //initialize the player
   player = new Player();
+  
+  enemy = new Enemy();
 }
 
 void draw(){
   noStroke();
   drawBackground(); //Draws the background using a function. 
   
+  
+  //Block of code dedicated to running the enemy methods
+  enemy.draw();
+  enemy.act();
+  
   //Block of code dedicated to runnings the player methods
   player.act();
   player.draw();
+  
   
   if (!keyPressed){
     //blockCheck is used here to stop the players block if they let go of the button

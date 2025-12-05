@@ -1,4 +1,5 @@
 class TimingMinigame {
+  // This stores all of the variables for the class.
   PVector position;
   PVector squarePosition;
   PVector velocity;
@@ -6,13 +7,19 @@ class TimingMinigame {
   boolean win;
 
   TimingMinigame() {
+    /*
+    This sets the position of the bar, the green you aim for, and a 
+    randomized position for the smaller white square
+    */
     position = new PVector(200, 460);
     squarePosition = new PVector(int(random(200, 300)), 460);
     velocity = new PVector(3, 0);
     acceleration = new PVector(-.01, 0);
     win = false;
   }
-
+  
+  
+  // This resets all the variables so the game can be played again on knockdown
   void resetMinigame(int k) {
     position = new PVector(200, 460);
     squarePosition = new PVector(int(random(200, 300)), 460);
@@ -21,6 +28,10 @@ class TimingMinigame {
     win = false;
   }
 
+  /* 
+  This moves the small square by its velocity, and reverses the velocity if
+  it hits the bounds of the bar. 
+  */
   void act() {
     velocity.add(acceleration);
     squarePosition.add(velocity);
@@ -32,6 +43,11 @@ class TimingMinigame {
     }
   }
   
+  /* 
+  This checks if the w key is pressed, and stops the square. If its in the green,
+  then win is set to true, which is checked to cause you to get up after winning the
+  minigame.
+  */
   void play(){
      if(keyPressed && key == 'w'){
         velocity = new PVector(0, 0);
@@ -42,6 +58,7 @@ class TimingMinigame {
      }
   }
 
+  // This draws the minigame bar using rects.
   void draw() {
     fill(0);
     rect(position.x, position.y, 400, 40);

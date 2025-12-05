@@ -13,7 +13,7 @@ int playerGetup;
 void setup() {
   noStroke();
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
-  round = 3;
+  round = 1;
   //initialize the player
   player = new Player();
 
@@ -105,7 +105,7 @@ void draw() {
             player.knockdowns = 0;
             player.roundKnockdowns = 0;
             round = 1;
-            gameState = "intermission";
+            gameState = "play";
             timer = 180;
           }
         }
@@ -123,7 +123,7 @@ void draw() {
             player.knockdowns = 0;
             player.roundKnockdowns = 0;
             round = 1;
-            gameState = "intermission";
+            gameState = "play";
             timer = 180;
           }
         }

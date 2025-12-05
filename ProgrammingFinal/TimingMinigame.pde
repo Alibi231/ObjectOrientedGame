@@ -36,7 +36,7 @@ class TimingMinigame {
      if(keyPressed && key == 'w'){
         velocity = new PVector(0, 0);
         acceleration = new PVector(0, 0);
-        if (squarePosition.x > position.x + 175 && squarePosition.x + 25 < position.x + 225){
+        if (squarePosition.x > position.x + 165 && squarePosition.x + 25 < position.x + 235){
           win = true;  
         }
      }

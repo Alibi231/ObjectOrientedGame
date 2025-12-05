@@ -118,12 +118,11 @@ class Enemy {
           state = "vulnerable";
         }
       } else if (currentAction == "uppercut") {
-        if (counter == 130) {
+        if (counter == 125) {
           //sprite = activePunch
-          print("AA");
           c = color(255, 0, 0);
           state = "attack";
-        } else if (counter == 129) {
+        } else if (counter == 124) {
           state = "vulnerable";
         }
       }
@@ -161,7 +160,7 @@ class Enemy {
   }
 
   void stateReset() {
-    state = "neutral";
+    state = "block";
     currentAction = "idle";
     counter = 0;
     waitTime = int(random(100, 300));

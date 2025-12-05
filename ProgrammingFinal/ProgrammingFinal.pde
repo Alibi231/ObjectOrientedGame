@@ -4,8 +4,11 @@ String gameState;
 int round = 1;
 int timer = 180;
 int frames;
+int knockdownCounter;
+int enemyGetup;
 
 void setup() {
+  noStroke();
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
 
   //initialize the player
@@ -23,26 +26,28 @@ void setup() {
 
 void draw() {
   if (gameState == "play") {
-    
+
     //This uses the frames variable to keep track of the amount of frames that have passed
     frames ++;
-    if (frames % 20 == 0){ // This checks if the game is on a 20 frame interval, which due to frame rate, would be exactly 1/3rd of a second.
-       timer --; 
-       if (timer == 0){ //Once the timer hits zero, the timer and framecount are reset, the round is increased, and the game goes to intermission
-          frames = 0;
-          timer  = 180;
-          round ++;
-          gameState = "intermission";
-          player.stateReset();
-          enemy.stateReset();
-       }
+    if (frames % 20 == 0) { // This checks if the game is on a 20 frame interval, which due to frame rate, would be exactly 1/3rd of a second.
+      timer --;
+      if (timer == 0) { //Once the timer hits zero, the timer and framecount are reset, the round is increased, and the game goes to intermission
+        frames = 0;
+        timer  = 180;
+        round ++;
+        gameState = "intermission";
+        player.stateReset();
+        player.roundKnockdowns = 0;
+        enemy.stateReset();
+        enemy.roundKnockdowns = 0;
+      }
     }
-    
-    
-    
-    noStroke();
+
+
+
+
     drawRingBackground(); //Draws the background using a function.
-    
+
     textCheat(str(timer), 720, 35, 50);
 
 
@@ -55,6 +60,11 @@ void draw() {
     player.act();
     player.draw();
     player.enemyCheck(enemy);
+    if (enemy.state == "down") {
+      frames = 0;
+      enemyGetup = int(random(10, 60)) + enemy.knockdowns;
+      gameState = "enemyDown";
+    }
 
     drawHealthBars(player.health, enemy.health);
 
@@ -63,8 +73,78 @@ void draw() {
       //blockCheck is used here to stop the players block if they let go of the button
       player.blockCheck();
     }
-  } else if (gameState == "intermission"){
+  } else if (gameState == "intermission") {
     drawIntermissionBackground();
+  } else if (gameState == "enemyDown") {
+
+    frames ++;
+
+    if (frames % 60 == 0) {
+      knockdownCounter ++;
+      if (knockdownCounter == enemyGetup && knockdownCounter < 10) {
+        enemy.stateReset();
+        enemy.health = 1000 - (enemy.knockdowns * 90);
+        gameState = "play";
+        knockdownCounter = 0;
+      }
+    }
+
+
+
+    drawRingBackground(); //Draws the background using a function.
+    textCheat(str(timer), 720, 35, 50); //Adds the visual timer in the corner of the screen.
+
+
+    player.act();
+    player.draw();
+
+    enemy.draw();
+
+    drawHealthBars(player.health, enemy.health);
+
+    if (knockdownCounter >= 1) {
+      if (enemy.roundKnockdowns < 3) {
+        if (knockdownCounter >= 11) {
+          textCheat("Knockout, You WIN!", 150, 250, 70);
+          textCheat("Press W to Restart!", 150, 350, 70);
+          if (keyPressed) {
+            if (key == 'w') {
+              enemy.stateReset();
+              enemy.health = 1000;
+              enemy.knockdowns = 0;
+              enemy.roundKnockdowns = 0;
+              player.stateReset();
+              player.health = 1000;
+              player.knockdowns = 0;
+              player.roundKnockdowns = 0;
+              round = 1;
+              gameState = "intermission";
+              timer = 180;
+            }
+          }
+        } else {
+          textCheat(str(knockdownCounter), 380, 400, 100);
+        }
+      } else {
+        textCheat("TKO, You WIN!", 225, 250, 70);
+        textCheat("Press W to Restart!", 225, 350, 70);
+        if (keyPressed) {
+          if (key == 'w') {
+            enemy.stateReset();
+            enemy.health = 1000;
+            enemy.knockdowns = 0;
+            enemy.roundKnockdowns = 0;
+            player.stateReset();
+            player.health = 1000;
+            player.knockdowns = 0;
+            player.roundKnockdowns = 0;
+            round = 1;
+            gameState = "intermission";
+            timer = 180;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -83,12 +163,12 @@ void drawRingBackground() {
 }
 
 void keyPressed() {
-  if (gameState == "play"){
-  player.processInput();
-  } else if (gameState == "intermission"){
-     if(key == 'w'){
-        gameState = "play"; 
-     }
+  if (gameState == "play") {
+    player.processInput();
+  } else if (gameState == "intermission") {
+    if (key == 'w') {
+      gameState = "play";
+    }
   }
 }
 
@@ -114,21 +194,21 @@ void drawHealthBars(int p, int e) {
 }
 
 //Draws a in between rounds image in the vein of Punchout!
-void drawIntermissionBackground(){
+void drawIntermissionBackground() {
   fill(0);
   rect(0, 0, 800, 800);
   fill(150);
   rect(0, 0, 300, 300);
   rect(500, 500, 300, 300);
-  if (round == 1){
+  if (round == 1) {
     textCheat("Press W to Punch, \nPress A and D to Dodge,\nPress S to Block!", 300, 60, 50);
     textCheat("Dodge his punch, \nThen counter punch!\nPress W to Start", 10, 560, 50);
   }
   textCheat("Round " + round, 225, 400, 100);
 }
 
-// This function lets me create as much text as I want, while technically only using the text function once in my code. 
-void textCheat(String txt, int xPos, int yPos, int txtSize){
+// This function lets me create as much text as I want, while technically only using the text function once in my code.
+void textCheat(String txt, int xPos, int yPos, int txtSize) {
   fill(255);
   textSize(txtSize);
   text(txt, xPos, yPos);

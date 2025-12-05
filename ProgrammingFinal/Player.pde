@@ -16,7 +16,7 @@ class Player {
     //SET PImage
     counter = 0;
     knockdowns = 0;
-    roundKnockdowns = 0;
+    roundKnockdowns = 2;
     position = new PVector(320, 640);
   }
 

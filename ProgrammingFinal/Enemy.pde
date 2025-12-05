@@ -63,7 +63,7 @@ class Enemy {
         //Sprite = upperCutStart
         c = color(0, 0, 100);
       }
-    }  else if (waitTime <= 0 && currentAction == "block") {
+    } else if (waitTime <= 0 && currentAction == "block") {
       if (randomizer <= 5) {
         state = "invulnerable";
         currentAction = "jab";
@@ -89,9 +89,7 @@ class Enemy {
         //Sprite = upperCutStart
         c = color(0, 0, 100);
       }
-    }
-    
-    else {
+    } else {
       if (counter > 0) {
         counter --;
       } else {
@@ -119,7 +117,7 @@ class Enemy {
         } else if (counter == 99) {
           state = "vulnerable";
         }
-      } else if (currentAction == "uppercut"){
+      } else if (currentAction == "uppercut") {
         if (counter == 130) {
           //sprite = activePunch
           print("AA");
@@ -131,36 +129,43 @@ class Enemy {
       }
     }
   }
-  
-  void playerCheck(Player player){
-    if(player.state == "attack"){
-      if(state == "block"){
-          c = color(200, 200, 200);
-          currentAction = "block";
-          state = "block";
-          counter = 10;
-          waitTime -= 30;
-          health -= 1;
-      } else if (state == "vulnerable"){
+
+  void playerCheck(Player player) {
+    if (player.state == "attack") {
+      if (state == "block") {
+        c = color(200, 200, 200);
+        currentAction = "block";
+        state = "block";
+        counter = 10;
+        waitTime -= 30;
+        health -= 1;
+      } else if (state == "vulnerable") {
         currentAction = "reel";
         counter = reelTime;
         state = "open";
         c = color(255, 255, 255);
         health -= 15;
-      } else if (state == "open"){
+      } else if (state == "open") {
         health -= 15;
       }
-      
+    }
+
+    if (health <= 0) {
+      knockdowns ++;
+      roundKnockdowns ++;
+      state = "down";
+      currentAction = "idle";
+      counter = 0;
+      waitTime = int(random(100, 300));
     }
   }
-  
-  void stateReset(){
-     state = "neutral";
-     currentAction = "idle";
-     counter = 0;
-     waitTime = int(random(100, 300));
-     //Sprite = Idle;
-     c = color(0);
-     
+
+  void stateReset() {
+    state = "neutral";
+    currentAction = "idle";
+    counter = 0;
+    waitTime = int(random(100, 300));
+    //Sprite = Idle;
+    c = color(0);
   }
 }

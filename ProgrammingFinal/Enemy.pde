@@ -146,7 +146,7 @@ class Enemy {
         c = color(255, 255, 255);
         health -= 15;
       } else if (state == "open") {
-        health -= 15;
+        health -= 1000005;
       }
     }
 

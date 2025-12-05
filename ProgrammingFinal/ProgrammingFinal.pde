@@ -1,11 +1,14 @@
 Player player;
 Enemy enemy;
+TimingMinigame timingMinigame;
+
 String gameState;
 int round = 1;
 int timer = 180;
 int frames;
 int knockdownCounter;
 int enemyGetup;
+int playerGetup;
 
 void setup() {
   noStroke();
@@ -17,6 +20,8 @@ void setup() {
   //initialize the enemy;
   enemy = new Enemy();
 
+  timingMinigame = new TimingMinigame();
+
   //Starting the gamestate in intermission, to give the player a breather.
   gameState = "intermission";
 
@@ -26,7 +31,6 @@ void setup() {
 
 void draw() {
   if (gameState == "play") {
-
     //This uses the frames variable to keep track of the amount of frames that have passed
     frames ++;
     if (frames % 20 == 0) { // This checks if the game is on a 20 frame interval, which due to frame rate, would be exactly 1/3rd of a second.
@@ -55,16 +59,23 @@ void draw() {
     enemy.draw();
     enemy.act();
     enemy.playerCheck(player);
+    if (enemy.state == "down") {
+      frames = 0;
+      enemyGetup = int(random(1, 6)) + enemy.knockdowns;
+      gameState = "enemyDown";
+    }
 
     //Block of code dedicated to runnings the player methods
     player.act();
     player.draw();
     player.enemyCheck(enemy);
-    if (enemy.state == "down") {
+    if (player.state == "down") {
       frames = 0;
-      enemyGetup = int(random(10, 60)) + enemy.knockdowns;
-      gameState = "enemyDown";
+      gameState = "playerDown";
+      timingMinigame.resetMinigame(player.knockdowns);
     }
+
+
 
     drawHealthBars(player.health, enemy.health);
 
@@ -102,6 +113,7 @@ void draw() {
 
     drawHealthBars(player.health, enemy.health);
 
+    // This block determines if the enemy has lost to a countout or to a TKO through a variety of if statements, and lets the player reset if they win.
     if (knockdownCounter >= 1) {
       if (enemy.roundKnockdowns < 3) {
         if (knockdownCounter >= 11) {
@@ -127,6 +139,74 @@ void draw() {
         }
       } else {
         textCheat("TKO, You WIN!", 225, 250, 70);
+        textCheat("Press W to Restart!", 225, 350, 70);
+        if (keyPressed) {
+          if (key == 'w') {
+            enemy.stateReset();
+            enemy.health = 1000;
+            enemy.knockdowns = 0;
+            enemy.roundKnockdowns = 0;
+            player.stateReset();
+            player.health = 1000;
+            player.knockdowns = 0;
+            player.roundKnockdowns = 0;
+            round = 1;
+            gameState = "intermission";
+            timer = 180;
+          }
+        }
+      }
+    }
+  } else if (gameState == "playerDown") {
+    frames ++;
+
+    drawRingBackground(); //Draws the background using a function.
+    textCheat(str(timer), 720, 35, 50); //Adds the visual timer in the corner of the screen
+
+    enemy.draw();
+
+    drawHealthBars(player.health, enemy.health);
+
+    if (frames % 60 == 0) {
+      knockdownCounter ++;
+    }
+
+    timingMinigame.draw();
+    timingMinigame.act();
+    timingMinigame.play();
+
+    if (timingMinigame.win == true) {
+      enemy.stateReset();
+      player.stateReset();
+      player.health = 1000 - (player.knockdowns * 100);
+      gameState = "play";
+    }
+
+    if (knockdownCounter >= 1) {
+      if (player.roundKnockdowns < 3) {
+        if (knockdownCounter >= 10) {
+          textCheat("Knockout, You LOSE!", 150, 250, 70);
+          textCheat("Press W to Restart!", 150, 350, 70);
+          if (keyPressed) {
+            if (key == 'w') {
+              enemy.stateReset();
+              enemy.health = 1000;
+              enemy.knockdowns = 0;
+              enemy.roundKnockdowns = 0;
+              player.stateReset();
+              player.health = 1000;
+              player.knockdowns = 0;
+              player.roundKnockdowns = 0;
+              round = 1;
+              gameState = "intermission";
+              timer = 180;
+            }
+          }
+        } else {
+          textCheat(str(knockdownCounter), 380, 400, 100);
+        }
+      } else {
+        textCheat("TKO, You LOSE!", 225, 250, 70);
         textCheat("Press W to Restart!", 225, 350, 70);
         if (keyPressed) {
           if (key == 'w') {
@@ -175,7 +255,6 @@ void keyPressed() {
 // Draws the health bars using map, and the int value of both the player and enemy health.
 void drawHealthBars(int p, int e) {
   fill(0);
-  println(e);
   rect(160, 0, 200, 40);
   rect(440, 0, 200, 40);
   fill(255);

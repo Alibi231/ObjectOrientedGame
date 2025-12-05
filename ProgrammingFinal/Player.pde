@@ -16,7 +16,7 @@ class Player {
     //SET PImage
     counter = 0;
     knockdowns = 0;
-    roundKnockdowns = 2;
+    roundKnockdowns = 0;
     position = new PVector(320, 640);
   }
 
@@ -119,6 +119,14 @@ class Player {
           }
        }
      }
+     
+     if (health <= 0) {
+      knockdowns ++;
+      roundKnockdowns ++;
+      state = "down";
+      currentAction = "idle";
+      counter = 0;
+    }
   }
   
   void stateReset(){

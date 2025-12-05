@@ -13,7 +13,7 @@ int playerGetup;
 void setup() {
   noStroke();
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
-
+  round = 1;
   //initialize the player
   player = new Player();
 
@@ -85,7 +85,18 @@ void draw() {
       player.blockCheck();
     }
   } else if (gameState == "intermission") {
-    drawIntermissionBackground();
+    if (round <= 3){
+        drawIntermissionBackground();
+    } else {
+      drawRingBackground();
+      if(player.knockdowns >= enemy.knockdowns){
+         textCheat("Judge Decision, You LOSE!", 15, 250, 70); 
+      } else {
+        textCheat("Judge Decision, You WIN!", 20, 250, 70); 
+      }  
+      
+    }
+    
   } else if (gameState == "enemyDown") {
 
     frames ++;

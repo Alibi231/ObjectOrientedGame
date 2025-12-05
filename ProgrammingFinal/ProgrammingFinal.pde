@@ -3,7 +3,7 @@ Enemy enemy;
 TimingMinigame timingMinigame;
 
 String gameState;
-int round = 1;
+int round;
 int timer = 180;
 int frames;
 int knockdownCounter;
@@ -13,7 +13,7 @@ int playerGetup;
 void setup() {
   noStroke();
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
-  round = 1;
+  round = 3;
   //initialize the player
   player = new Player();
 
@@ -87,18 +87,48 @@ void draw() {
       player.blockCheck();
     }
   } else if (gameState == "intermission") {
-    if (round <= 3){
-        drawIntermissionBackground();
+    if (round <= 3) {
+      drawIntermissionBackground();
     } else {
       drawRingBackground();
-      if(player.knockdowns >= enemy.knockdowns){
-         textCheat("Judge Decision, You LOSE!", 15, 250, 70); 
+      if (player.knockdowns >= enemy.knockdowns) {
+        textCheat("Judge Decision, You LOSE!", 15, 250, 70);
+        textCheat("Press Q to Restart!", 150, 350, 70);
+        if (keyPressed) {
+          if (key == 'q') {
+            enemy.stateReset();
+            enemy.health = 1000;
+            enemy.knockdowns = 0;
+            enemy.roundKnockdowns = 0;
+            player.stateReset();
+            player.health = 1000;
+            player.knockdowns = 0;
+            player.roundKnockdowns = 0;
+            round = 1;
+            gameState = "intermission";
+            timer = 180;
+          }
+        }
       } else {
-        textCheat("Judge Decision, You WIN!", 20, 250, 70); 
-      }  
-      
+        textCheat("Judge Decision, You WIN!", 20, 250, 70);
+        textCheat("Press Q to Restart!", 150, 350, 70);
+        if (keyPressed) {
+          if (key == 'q') {
+            enemy.stateReset();
+            enemy.health = 1000;
+            enemy.knockdowns = 0;
+            enemy.roundKnockdowns = 0;
+            player.stateReset();
+            player.health = 1000;
+            player.knockdowns = 0;
+            player.roundKnockdowns = 0;
+            round = 1;
+            gameState = "intermission";
+            timer = 180;
+          }
+        }
+      }
     }
-    
   } else if (gameState == "enemyDown") {
 
     frames ++;
@@ -295,6 +325,12 @@ void drawIntermissionBackground() {
   if (round == 1) {
     textCheat("Press W to Punch, \nPress A and D to Dodge,\nPress S to Block!", 300, 60, 50);
     textCheat("Dodge his punch, \nThen counter punch!\nPress Q to Start", 10, 560, 50);
+  } else if (round == 2) {
+    textCheat("Beware His Uppercut!, \nIt does massive damage,\nAnd Can't Be Blocked", 302, 60, 50);
+    textCheat("But if you dodge it \nYou get a HUGE opening", 10, 560, 45);
+  } else {
+    textCheat("Final Round, \nIt's Now or Never!", 300, 60, 60);
+    textCheat("If No One Wins \nIt will go to decision", 10, 560, 58);
   }
   textCheat("Round " + round, 225, 400, 100);
 }

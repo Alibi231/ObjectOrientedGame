@@ -36,11 +36,13 @@ class Player {
       if (key == 'a') {
         counter = 40;
         currentAction = "lDodge";
+        position = new PVector(260, 600);
         state = "dodge";
         sprite = loadImage("playerLDodge.png");
       } else if (key == 'd') {
         counter = 40;
         currentAction = "rDodge";
+        position = new PVector(380, 600);
         state = "dodge";
         sprite = loadImage("playerRDodge.png");
       } else if (key == 'w') {
@@ -60,6 +62,7 @@ class Player {
     if (counter > 0) {
       counter --;
     } else if (counter == 0) {
+      position.y = 600;
       if (currentAction != "block") {
         sprite = loadImage("playerIdle.png");
         currentAction = "idle";
@@ -69,12 +72,14 @@ class Player {
 
     if (currentAction == "lDodge" || currentAction == "rDodge") {
       if (counter == 20) {
+        position = new PVector(320, 600);
         sprite = loadImage("playerIdle.png");
         state = "default";
       }
     } else if (currentAction == "punch") {
       if (counter == 5) {
         sprite = loadImage("playerPunch.png");
+        position.y = 550;
         state = "attack";
       } else if (counter == 4) {
         state = "neutral";
@@ -83,7 +88,6 @@ class Player {
   }
 
   void draw() {
-    //Will eventually use PImage, for now, use a grey rect
     image(sprite, position.x, position.y);
   }
 

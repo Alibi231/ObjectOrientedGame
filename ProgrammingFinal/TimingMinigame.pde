@@ -16,8 +16,8 @@ class TimingMinigame {
   void resetMinigame(int k) {
     position = new PVector(200, 460);
     squarePosition = new PVector(int(random(200, 300)), 460);
-    velocity = new PVector(k * 3, 0);
-    acceleration = new PVector(-.0005 * (k*.75), 0);
+    velocity = new PVector(3 + (k * 1), 0);
+    acceleration = new PVector(-.0005 - (k * 0.0015), 0);
     win = false;
   }
 

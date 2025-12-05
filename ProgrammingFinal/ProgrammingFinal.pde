@@ -61,7 +61,8 @@ void draw() {
     enemy.playerCheck(player);
     if (enemy.state == "down") {
       frames = 0;
-      enemyGetup = int(random(1, 6)) + enemy.knockdowns;
+      knockdownCounter = 0;
+      enemyGetup = int(random(1, 8)) + enemy.knockdowns;
       gameState = "enemyDown";
     }
 
@@ -70,6 +71,7 @@ void draw() {
     player.draw();
     player.enemyCheck(enemy);
     if (player.state == "down") {
+      knockdownCounter = 0;
       frames = 0;
       gameState = "playerDown";
       timingMinigame.resetMinigame(player.knockdowns);
@@ -105,7 +107,7 @@ void draw() {
       knockdownCounter ++;
       if (knockdownCounter == enemyGetup && knockdownCounter < 10) {
         enemy.stateReset();
-        enemy.health = 1000 - (enemy.knockdowns * 90);
+        enemy.health = 1000 - (enemy.knockdowns * 100);
         gameState = "play";
         knockdownCounter = 0;
       }
@@ -129,9 +131,9 @@ void draw() {
       if (enemy.roundKnockdowns < 3) {
         if (knockdownCounter >= 11) {
           textCheat("Knockout, You WIN!", 150, 250, 70);
-          textCheat("Press W to Restart!", 150, 350, 70);
+          textCheat("Press Q to Restart!", 150, 350, 70);
           if (keyPressed) {
-            if (key == 'w') {
+            if (key == 'q') {
               enemy.stateReset();
               enemy.health = 1000;
               enemy.knockdowns = 0;
@@ -150,9 +152,9 @@ void draw() {
         }
       } else {
         textCheat("TKO, You WIN!", 225, 250, 70);
-        textCheat("Press W to Restart!", 225, 350, 70);
+        textCheat("Press Q to Restart!", 225, 350, 70);
         if (keyPressed) {
-          if (key == 'w') {
+          if (key == 'q') {
             enemy.stateReset();
             enemy.health = 1000;
             enemy.knockdowns = 0;
@@ -189,7 +191,7 @@ void draw() {
     if (timingMinigame.win == true) {
       enemy.stateReset();
       player.stateReset();
-      player.health = 1000 - (player.knockdowns * 100);
+      player.health = 1000 - (player.knockdowns * 166);
       gameState = "play";
     }
 
@@ -218,9 +220,9 @@ void draw() {
         }
       } else {
         textCheat("TKO, You LOSE!", 225, 250, 70);
-        textCheat("Press W to Restart!", 225, 350, 70);
+        textCheat("Press Q to Restart!", 225, 350, 70);
         if (keyPressed) {
-          if (key == 'w') {
+          if (key == 'q') {
             enemy.stateReset();
             enemy.health = 1000;
             enemy.knockdowns = 0;
@@ -257,7 +259,7 @@ void keyPressed() {
   if (gameState == "play") {
     player.processInput();
   } else if (gameState == "intermission") {
-    if (key == 'w') {
+    if (key == 'q') {
       gameState = "play";
     }
   }
@@ -292,7 +294,7 @@ void drawIntermissionBackground() {
   rect(500, 500, 300, 300);
   if (round == 1) {
     textCheat("Press W to Punch, \nPress A and D to Dodge,\nPress S to Block!", 300, 60, 50);
-    textCheat("Dodge his punch, \nThen counter punch!\nPress W to Start", 10, 560, 50);
+    textCheat("Dodge his punch, \nThen counter punch!\nPress Q to Start", 10, 560, 50);
   }
   textCheat("Round " + round, 225, 400, 100);
 }

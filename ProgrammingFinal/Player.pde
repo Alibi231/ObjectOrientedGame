@@ -120,4 +120,13 @@ class Player {
        }
      }
   }
+  
+  void stateReset(){
+     state = "neutral";
+     currentAction = "idle";
+     counter = 0;
+     //Sprite = Idle
+     c = color(100);
+     
+  }
 }

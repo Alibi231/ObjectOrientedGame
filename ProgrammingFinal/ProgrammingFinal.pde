@@ -2,6 +2,8 @@ Player player;
 Enemy enemy;
 String gameState;
 int round = 1;
+int timer = 180;
+int frames;
 
 void setup() {
   size(800, 800); //Sets the size of the screen to 800 by 800, to make details easier to see.
@@ -16,12 +18,32 @@ void setup() {
   gameState = "intermission";
 
   frameRate(60); // Sets framerate at 60 so animations can be standard.
+  frames = 0;
 }
 
 void draw() {
   if (gameState == "play") {
+    
+    //This uses the frames variable to keep track of the amount of frames that have passed
+    frames ++;
+    if (frames % 20 == 0){ // This checks if the game is on a 20 frame interval, which due to frame rate, would be exactly 1/3rd of a second.
+       timer --; 
+       if (timer == 0){ //Once the timer hits zero, the timer and framecount are reset, the round is increased, and the game goes to intermission
+          frames = 0;
+          timer  = 180;
+          round ++;
+          gameState = "intermission";
+          player.stateReset();
+          enemy.stateReset();
+       }
+    }
+    
+    
+    
     noStroke();
     drawRingBackground(); //Draws the background using a function.
+    
+    textCheat(str(timer), 720, 35, 50);
 
 
     //Block of code dedicated to running the enemy methods

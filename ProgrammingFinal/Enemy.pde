@@ -153,4 +153,14 @@ class Enemy {
       
     }
   }
+  
+  void stateReset(){
+     state = "neutral";
+     currentAction = "idle";
+     counter = 0;
+     waitTime = int(random(100, 300));
+     //Sprite = Idle;
+     c = color(0);
+     
+  }
 }
